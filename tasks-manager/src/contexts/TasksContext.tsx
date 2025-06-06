@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Task } from "../types/Task";
 import { TaskStatus } from "../types/TasksStatus";
 
@@ -15,7 +15,25 @@ export interface TasksContextType {
 const TaskContext = createContext<TasksContextType | null>(null);
 
 export const TasksProvider = ({ children }: { children: ReactNode }) => {
-    const [tasks, setTasks] = useState<Task[]>([]);
+
+
+    const [tasks, setTasks] = useState<Task[]>(() => {
+        const stored = localStorage.getItem('tasks');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                console.error('Failed to parse tasks from localStorage:', e);
+            }
+        }
+        return [];
+
+    });
+
+    useEffect(() => {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }, [tasks])
+
     const addTask = (task: Task) => setTasks((prev) => [...prev, task]);
     const clearTasks = () => setTasks([]);
     const removeTask = (id: number) => setTasks((prev) => prev.filter((t) => t.id !== id));
