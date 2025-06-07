@@ -1,23 +1,34 @@
 import { useTaskContext } from '../contexts/TasksContext';
-import { Button, Menu, MenuHandler, MenuItem, MenuList } from '@material-tailwind/react';
 import type { Task } from '../types/Task';
 import { TaskStatus } from '../types/TasksStatus';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 
 const TaskStatusButton = ({ task }: { task: Task }) => {
     const { updateStatus } = useTaskContext();
 
     return (
-        <Menu>
-            <MenuHandler>
-                <Button variant="outlined" className="capitalize" >{task.status}</Button>
-            </MenuHandler>
-            <MenuList>
-                <MenuItem type='button' onClick={() => updateStatus(task.id, TaskStatus.new)}><span>new</span></MenuItem>
-                <MenuItem onClick={() => updateStatus('in progres')}>in progres</MenuItem>
-                <MenuItem>finished</MenuItem>
-            </MenuList>
-        </Menu>
+        <Menu as="div" className="relative inline-block text-left">
+            <MenuButton className="inline-flex justify-center w-full px-4 py-2 bg-blue-600 text-white rounded">
+                {task.status}
+            </MenuButton>
+            <MenuItems
+                anchor="bottom start"
+                className="absolute mt-2 w-56 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded shadow-lg focus:outline-none"
+            >
+                {Object.values(TaskStatus).map((val: TaskStatus) => (
+                    <MenuItem key={val}>
+                        <button
+                            onClick={() => updateStatus(task.id, val)}
+                            className="block w-full px-4 py-2 text-sm text-gray-700 data-[focus]:bg-blue-500 data-[focus]:text-white"
+                        >
+                            {val}
+                        </button>
+                    </MenuItem>
 
+                ))}
+
+            </MenuItems>
+        </Menu>
     );
 };
 
