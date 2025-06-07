@@ -12,7 +12,7 @@ const TasksList: React.FC = () => {
         const newTask: Task = {
             id: randomId,
             title: `Task ${randomId}`,
-            description: '',
+            description: 'description Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem fugiat corporis autem vitae et quisquam aliquid provident? Nostrum, consequuntur saepe?',
             comments: [],
             status: TaskStatus.new,
         };
@@ -20,14 +20,12 @@ const TasksList: React.FC = () => {
     };
 
     return (
-        <div>
-            <ul>
-                {tasks.map((task) => (
-                    <TaskCard key={task.id} task={task} />
+        <div className='bg-blue-500 text-white p-1 rounded gap-2 flex flex-col max-w-md'>
+            {tasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
 
-                ))}
-            </ul>
-            <button onClick={handleAddRandomTask}>Add Random Task</button>
+            ))}
+            <button className='border border-gray-300 rounded-lg shadow-sm p-3' onClick={handleAddRandomTask}>Add Random Task</button>
         </div>
     );
 };
