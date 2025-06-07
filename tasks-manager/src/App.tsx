@@ -1,10 +1,10 @@
 import './App.css'
-import TasksList from './components/TasksLists'
+import TasksBoard from './components/TasksBoard'
+
 
 function App() {
-
   return (
-    <TasksList />
+    <TasksBoard />
   )
 }
 

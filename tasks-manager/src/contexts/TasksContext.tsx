@@ -7,14 +7,32 @@ export interface TasksContextType {
     addTask: (task: Task) => void;
     removeTask: (id: number) => void;
     clearTasks: () => void;
-    updateTitle: (id: number, newTitle: string) => void;
-    updateDescrption: (id: number, newTitle: string) => void;
+    updateTitleAndDescription: (id: number, newTitle: string, newDescription: string) => void;
     updateStatus: (id: number, newStatus: TaskStatus) => void;
+    createNewTask: (title: string, description: string) => void;
 }
 
 const TaskContext = createContext<TasksContextType | null>(null);
 
 export const TasksProvider = ({ children }: { children: ReactNode }) => {
+
+
+    const [tasksMaxId, setTasksMaxId] = useState<number>(() => {
+        const stored = localStorage.getItem('tasksMaxId');
+        if (stored) {
+            try {
+                return +stored;
+            } catch (e) {
+                console.error('Failed to parse tasks from localStorage:', e);
+            }
+        }
+        return 1;
+
+    });
+
+    useEffect(() => {
+        localStorage.setItem('tasksMaxId', tasksMaxId.toString());
+    }, [tasksMaxId]);
 
 
     const [tasks, setTasks] = useState<Task[]>(() => {
@@ -32,16 +50,27 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks])
+    }, [tasks]);
 
     const addTask = (task: Task) => setTasks((prev) => [...prev, task]);
+    const createNewTask = (title: string, description: string) => {
+        const currentTaskId = tasksMaxId;
+        setTasksMaxId(currentTaskId + 1);
+        addTask({
+            id: currentTaskId,
+            title,
+            description,
+            status: TaskStatus.new,
+            comments: [],
+        })
+    };
     const clearTasks = () => setTasks([]);
     const removeTask = (id: number) => setTasks((prev) => prev.filter((t) => t.id !== id));
-    const updateTitle = (id: number, newTitle: string) => {
+    const updateTitleAndDescription = (id: number, newTitle: string, newDescription: string) => {
         setTasks((prev) => {
             return prev.map(t => {
                 if (t.id === id) {
-                    return { ...t, title: newTitle };
+                    return { ...t, title: newTitle, description: newDescription };
                 }
                 else {
                     return t;
@@ -49,10 +78,10 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
             })
         })
     }
-    const updateDescrption = (id: number, newDescription: string) => setTasks((prev) => prev.map(t => t.id === id ? { ...t, description: newDescription } : t))
+
     const updateStatus = (id: number, newStatus: TaskStatus) => setTasks((prev) => prev.map(t => t.id === id ? { ...t, status: newStatus } : t))
     return (
-        <TaskContext.Provider value={{ tasks, addTask, removeTask, clearTasks, updateTitle, updateDescrption, updateStatus }}>
+        <TaskContext.Provider value={{ tasks, addTask, removeTask, clearTasks, updateTitleAndDescription, updateStatus, createNewTask }}>
             {children}
         </TaskContext.Provider>
     );

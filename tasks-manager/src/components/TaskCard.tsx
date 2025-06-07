@@ -1,7 +1,8 @@
-import { FaPencil } from 'react-icons/fa6';
+
 import TaskStatusButton from './TaskStatusBtn';
 import DeleteTaskBtn from './DeleteTaskBtn';
 import type { Task } from '../types/Task';
+import EditTaskBtn from './EditTaskBtn';
 
 const TaskCard = ({ task }: { task: Task }) => {
     return (
@@ -15,7 +16,8 @@ const TaskCard = ({ task }: { task: Task }) => {
             </span>
             <div className='flex gap-5'>
                 <DeleteTaskBtn task={task}></DeleteTaskBtn>
-                <button ><FaPencil /></button>
+                <EditTaskBtn task={task}></EditTaskBtn>
+
             </div>
         </div>
 
