@@ -11,11 +11,24 @@ const TasksBoard = () => {
 
 
     return (
-        <div className='p-1 rounded gap-2 flex'>
-            <TasksList tasks={newTasks}></TasksList>
-            <TasksList tasks={inProgressTasks}></TasksList>
-            <TasksList tasks={finishedTasks}></TasksList>
-            <CreateTaskBtn></CreateTaskBtn>
+        <div className='flex flex-col w-full h-screen items-center justify-center'>
+            <h1 className='mt-10 text-4xl'>Tasks Manager</h1>
+            <div className='flex flex-col flex-1 p-12 w-full gap-2 items-stretch'>
+                <div className='p-1 rounded flex gap-2 flex-1'>
+                    <div className='flex-1'>
+                        <TasksList tasks={newTasks} title='New Tasks'></TasksList>
+                    </div>
+                    <div className='flex-1'>
+                        <TasksList tasks={inProgressTasks} title='In Progress Tasks'></TasksList>
+                    </div>
+                    <div className='flex-1'>
+                        <TasksList tasks={finishedTasks} title='Finished Tasks'></TasksList>
+                    </div>
+                </div>
+                <div>
+                    <CreateTaskBtn></CreateTaskBtn>
+                </div>
+            </div>
         </div>
     );
 };

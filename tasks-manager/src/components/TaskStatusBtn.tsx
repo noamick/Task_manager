@@ -1,32 +1,42 @@
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { useTaskContext } from '../contexts/TasksContext';
 import type { Task } from '../types/Task';
 import { TaskStatus } from '../types/TasksStatus';
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 
 const TaskStatusButton = ({ task }: { task: Task }) => {
     const { updateStatus } = useTaskContext();
 
     return (
         <Menu as="div" className="relative inline-block text-left">
-            <MenuButton className="inline-flex justify-center w-full px-4 py-2 bg-blue-600 text-white rounded">
+            <MenuButton
+                className="
+          inline-flex items-center justify-center
+          text-xs font-medium text-white bg-blue-800
+          rounded px-2.5 py-1.5
+          hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+        "
+            >
                 {task.status}
             </MenuButton>
-            <MenuItems
-                anchor="bottom start"
-                className="absolute mt-2 w-56 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded shadow-lg focus:outline-none"
-            >
-                {Object.values(TaskStatus).map((val: TaskStatus) => (
-                    <MenuItem key={val}>
-                        <button
-                            onClick={() => updateStatus(task.id, val)}
-                            className="block w-full px-4 py-2 text-sm text-gray-700 data-[focus]:bg-blue-500 data-[focus]:text-white"
-                        >
-                            {val}
-                        </button>
+
+            <MenuItems className="absolute z-10 mt-1 w-44 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                {Object.values(TaskStatus).map((status) => (
+                    <MenuItem key={status} disabled={status === task.status}>
+                        {({ active, disabled }) => (
+                            <button
+                                onClick={() => updateStatus(task.id, status)}
+                                disabled={disabled}
+                                className={`
+                  block w-full text-left px-3 py-1.5 text-sm
+                  ${active && !disabled ? 'bg-blue-500 text-white' : 'text-gray-700'}
+                  ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+                `}
+                            >
+                                {status}
+                            </button>
+                        )}
                     </MenuItem>
-
                 ))}
-
             </MenuItems>
         </Menu>
     );

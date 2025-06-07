@@ -1,4 +1,3 @@
-import './App.css'
 import TasksBoard from './components/TasksBoard'
 
 
