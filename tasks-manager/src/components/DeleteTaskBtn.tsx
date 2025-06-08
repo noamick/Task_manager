@@ -1,8 +1,8 @@
+import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { useState } from "react";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { useTaskContext } from "../contexts/TasksContext";
 import type { Task } from "../types/Task";
-import { Description, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { useState } from "react";
 
 const DeleteTaskBtn = ({ task }: { task: Task }) => {
     const { removeTask } = useTaskContext();
@@ -22,7 +22,7 @@ const DeleteTaskBtn = ({ task }: { task: Task }) => {
                     <DialogPanel className="w-full max-w-md rounded bg-white p-6">
                         <DialogTitle className="text-lg font-bold">Delete Task</DialogTitle>
                         <Description className="mt-2 text-sm text-gray-500">
-                            Are you sure you want to delete task {task.id}?
+                            Are you sure you want to delete task {task.title}?
                         </Description>
                         <div className="mt-6 flex justify-end gap-4">
                             <button

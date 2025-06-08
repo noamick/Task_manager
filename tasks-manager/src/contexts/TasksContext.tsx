@@ -16,18 +16,15 @@ const TaskContext = createContext<TasksContextType | null>(null);
 
 export const TasksProvider = ({ children }: { children: ReactNode }) => {
 
-
     const [tasksMaxId, setTasksMaxId] = useState<number>(() => {
         const stored = localStorage.getItem('tasksMaxId');
         if (stored) {
-            try {
-                return +stored;
-            } catch (e) {
-                console.error('Failed to parse tasks from localStorage:', e);
+            const tryMaxIdNumber = +stored;
+            if (tryMaxIdNumber) {
+                return tryMaxIdNumber;
             }
         }
         return 1;
-
     });
 
     useEffect(() => {
@@ -45,7 +42,6 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
             }
         }
         return [];
-
     });
 
     useEffect(() => {
@@ -62,7 +58,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
             description,
             status: TaskStatus.new,
             comments: [],
-        })
+        });
     };
     const clearTasks = () => setTasks([]);
     const removeTask = (id: number) => setTasks((prev) => prev.filter((t) => t.id !== id));

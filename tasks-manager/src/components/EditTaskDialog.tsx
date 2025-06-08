@@ -1,6 +1,6 @@
+import { Description, Dialog, DialogPanel, DialogTitle, Field, Input, Label } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import type { Task } from "../types/Task";
-import { Dialog, DialogPanel, DialogTitle, Description, Field, Label, Input } from "@headlessui/react";
 
 
 interface EditTaskDialogProps {
@@ -47,16 +47,16 @@ const EditTaskDialog = ({ open, onClose, onSave, initialTask }: EditTaskDialogPr
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                                className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm"
                             />
                         </Field>
                         <Field>
                             <Label className="block text-sm font-medium text-gray-700">Description</Label>
-                            <Input
-                                type="text"
+                            <textarea
+                                rows={4}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
+                                className="p-4 mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
                             />
                         </Field>
                     </div>
