@@ -48,7 +48,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }, [tasks]);
 
-    const addTask = (task: Task) => setTasks((prev) => [...prev, task]);
+    const addTask = (task: Task) => setTasks([...tasks, task]);
     const createNewTask = (title: string, description: string) => {
         const currentTaskId = tasksMaxId;
         setTasksMaxId(currentTaskId + 1);
@@ -61,18 +61,17 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         });
     };
     const clearTasks = () => setTasks([]);
-    const removeTask = (id: number) => setTasks((prev) => prev.filter((t) => t.id !== id));
+    const removeTask = (id: number) => setTasks(tasks.filter((t) => t.id !== id));
     const updateTitleAndDescription = (id: number, newTitle: string, newDescription: string) => {
-        setTasks((prev) => {
-            return prev.map(t => {
-                if (t.id === id) {
-                    return { ...t, title: newTitle, description: newDescription };
-                }
-                else {
-                    return t;
-                }
-            })
+        setTasks(tasks.map(t => {
+            if (t.id === id) {
+                return { ...t, title: newTitle, description: newDescription };
+            }
+            else {
+                return t;
+            }
         })
+        )
     }
 
     const updateStatus = (id: number, newStatus: TaskStatus) => setTasks((prev) => prev.map(t => t.id === id ? { ...t, status: newStatus } : t))
