@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit"
+  },
+  "python.formatting.provider": "black",
+  "python.sortImports.args": ["--profile", "black"],
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.languageServer": "Pylance",
+  "python.analysis.fixAll": [
+    "source.unusedImports"
+  ],
+  "python-envs.pythonProjects": []
+}

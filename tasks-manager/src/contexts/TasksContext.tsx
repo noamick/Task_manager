@@ -1,86 +1,93 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Task } from "../types/Task";
+import { Humans } from "../types/Humans";
+import type { Task, TaskWithoutId } from "../types/Task";
 import { TaskStatus } from "../types/TasksStatus";
+import { createTaskApi, deleteTaskApi, readTasksApi, updateTaskApi } from "../utils/tasksApi";
 
 export interface TasksContextType {
     tasks: Task[];
-    addTask: (task: Task) => void;
-    removeTask: (id: number) => void;
-    clearTasks: () => void;
-    updateTitleAndDescription: (id: number, newTitle: string, newDescription: string) => void;
-    updateStatus: (id: number, newStatus: TaskStatus) => void;
-    createNewTask: (title: string, description: string) => void;
+    addTask: (task: Task) => Promise<void>;
+    removeTask: (id: number) => Promise<void>;
+    updateTitleAndDescription: (task: Task, newTitle: string, newDescription: string) => Promise<void>;
+    updateStatus: (task: Task, newStatus: TaskStatus) => Promise<void>;
+    createNewTask: (title: string, description: string) => Promise<void>;
+    updateName: (task: Task, newName: Humans) => Promise<void>;
+
 }
 
 const TaskContext = createContext<TasksContextType | null>(null);
 
 export const TasksProvider = ({ children }: { children: ReactNode }) => {
 
-    const [tasksMaxId, setTasksMaxId] = useState<number>(() => {
-        const stored = localStorage.getItem('tasksMaxId');
-        if (stored) {
-            const tryMaxIdNumber = +stored;
-            if (tryMaxIdNumber) {
-                return tryMaxIdNumber;
-            }
-        }
-        return 1;
-    });
+    const [tasks, setTasks] = useState<Task[]>([]);
+
+    const loadTasks = async () => {
+        setTasks(await readTasksApi());
+    }
 
     useEffect(() => {
-        localStorage.setItem('tasksMaxId', tasksMaxId.toString());
-    }, [tasksMaxId]);
+        loadTasks();
+    }, []);
 
+    const addTask = async (task: TaskWithoutId) => {
+        await createTaskApi(task);
+        await loadTasks();
+    };
 
-    const [tasks, setTasks] = useState<Task[]>(() => {
-        const stored = localStorage.getItem('tasks');
-        if (stored) {
-            try {
-                return JSON.parse(stored);
-            } catch (e) {
-                console.error('Failed to parse tasks from localStorage:', e);
-            }
-        }
-        return [];
-    });
-
-    useEffect(() => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }, [tasks]);
-
-    const addTask = (task: Task) => setTasks([...tasks, task]);
-    const createNewTask = (title: string, description: string) => {
-        const currentTaskId = tasksMaxId;
-        setTasksMaxId(currentTaskId + 1);
-        addTask({
-            id: currentTaskId,
+    const createNewTask = async (title: string, description: string) => {
+        await addTask({
             title,
             description,
             status: TaskStatus.new,
             comments: [],
+            human: ''
         });
     };
-    const clearTasks = () => setTasks([]);
-    const removeTask = (id: number) => setTasks(tasks.filter((t) => t.id !== id));
-    const updateTitleAndDescription = (id: number, newTitle: string, newDescription: string) => {
-        setTasks(tasks.map(t => {
-            if (t.id === id) {
-                return { ...t, title: newTitle, description: newDescription };
-            }
-            else {
-                return t;
-            }
-        })
-        )
+
+    const removeTask = async (id: number) => {
+        await deleteTaskApi(id);
+        await loadTasks();
     }
 
-    const updateStatus = (id: number, newStatus: TaskStatus) => setTasks((prev) => prev.map(t => t.id === id ? { ...t, status: newStatus } : t))
+    const updateTitleAndDescription = async (task: Task, newTitle: string, newDescription: string) => {
+        await updateTaskApi(task.id, {
+            title: newTitle,
+            description: newDescription,
+            status: task.status,
+            comments: task.comments,
+            human: task.human,
+        });
+        await loadTasks();
+    }
+
+    const updateName = async (task: Task, newName: Humans) => {
+        await updateTaskApi(task.id, {
+            title: task.title,
+            description: task.description,
+            status: task.status,
+            comments: task.comments,
+            human: newName,
+        });
+        await loadTasks();
+    };
+
+    const updateStatus = async (task: Task, newStatus: TaskStatus) => {
+        await updateTaskApi(task.id, {
+            title: task.title,
+            description: task.description,
+            status: newStatus,
+            comments: task.comments,
+            human: task.human,
+        });
+        await loadTasks();
+    }
     return (
-        <TaskContext.Provider value={{ tasks, addTask, removeTask, clearTasks, updateTitleAndDescription, updateStatus, createNewTask }}>
+        <TaskContext.Provider value={{ tasks, addTask, removeTask, updateTitleAndDescription, updateStatus, createNewTask, updateName }}>
             {children}
         </TaskContext.Provider>
     );
 };
+
 export const useTaskContext = (): TasksContextType => {
     const context = useContext(TaskContext);
     if (!context) {

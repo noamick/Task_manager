@@ -1,8 +1,8 @@
 
-import { useTaskContext } from "../contexts/TasksContext";
-import type { Task } from "../types/Task";
 import { useState } from "react";
 import { FaPencil } from "react-icons/fa6";
+import { useTaskContext } from "../contexts/TasksContext";
+import type { Task } from "../types/Task";
 import EditTaskDialog from "./EditTaskDialog";
 
 const EditTaskBtn = ({ task }: { task: Task }) => {
@@ -10,7 +10,7 @@ const EditTaskBtn = ({ task }: { task: Task }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleEdit = (title: string, description: string) => {
-        updateTitleAndDescription(task.id, title, description);
+        updateTitleAndDescription(task, title, description);
     };
 
     return (

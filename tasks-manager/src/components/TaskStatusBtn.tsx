@@ -23,7 +23,7 @@ const TaskStatusButton = ({ task }: { task: Task }) => {
                     <MenuItem
                         key={status}
                         as="button"
-                        onClick={() => updateStatus(task.id, status)}
+                        onClick={() => updateStatus(task, status)}
                         className="block w-full text-left px-3 py-1.5 text-sm text-gray-700 
              data-[headlessui-state=active]:bg-blue-500
              data-[headlessui-state=active]:text-white">
