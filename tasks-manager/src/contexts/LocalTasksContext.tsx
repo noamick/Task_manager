@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Humans } from "../types/Humans";
+import { Owner } from "../types/Owner";
 import type { Task } from "../types/Task";
 import { TaskStatus } from "../types/TasksStatus";
 
@@ -11,7 +11,7 @@ export interface TasksContextType {
     updateTitleAndDescription: (id: number, newTitle: string, newDescription: string) => void;
     updateStatus: (id: number, newStatus: TaskStatus) => void;
     createNewTask: (title: string, description: string) => void;
-    updateName: (id: number, newName: Humans) => void;
+    updateName: (id: number, newName: Owner) => void;
 
 }
 
@@ -61,7 +61,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
             description,
             status: TaskStatus.new,
             comments: [],
-            human: Humans.Rooth
+            owner: Owner.Rooth
         });
     };
     const clearTasks = () => setTasks([]);
@@ -78,7 +78,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
         )
     }
 
-    const updateName = (id: number, newName: Humans) => {
+    const updateName = (id: number, newName: Owner) => {
         setTasks(prev => prev.map(task =>
             task.id === id ? { ...task, human: newName } : task
         ));

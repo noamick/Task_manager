@@ -29,7 +29,7 @@ class Task(Base):
     description = Column(Text)
     comments = Column(JSON, default=list)
     status = Column(Enum(TaskStatus), default=TaskStatus.NEW)
-    human = Column(String(100))
+    owner = Column(String(100))
 
     def __repr__(self):
         return f"<Task(id={self.id}, title={self.title}, status={self.status})>"

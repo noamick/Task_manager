@@ -1,7 +1,7 @@
 import type { TaskStatus } from "./TasksStatus";
 
 export interface TaskWithoutId {
-    human?: string;
+    owner: string;
     title: string;
     description: string;
     comments: string[];

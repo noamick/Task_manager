@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Humans } from "../types/Humans";
 import type { Task, TaskWithoutId } from "../types/Task";
 import { TaskStatus } from "../types/TasksStatus";
 import { createTaskApi, deleteTaskApi, readTasksApi, updateTaskApi } from "../utils/tasksApi";
@@ -11,8 +10,7 @@ export interface TasksContextType {
     updateTitleAndDescription: (task: Task, newTitle: string, newDescription: string) => Promise<void>;
     updateStatus: (task: Task, newStatus: TaskStatus) => Promise<void>;
     createNewTask: (title: string, description: string) => Promise<void>;
-    updateName: (task: Task, newName: Humans) => Promise<void>;
-
+    updateOwner: (task: Task, newName: string | null) => Promise<void>;
 }
 
 const TaskContext = createContext<TasksContextType | null>(null);
@@ -40,7 +38,7 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
             description,
             status: TaskStatus.new,
             comments: [],
-            human: ''
+            owner: ''
         });
     };
 
@@ -55,18 +53,18 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
             description: newDescription,
             status: task.status,
             comments: task.comments,
-            human: task.human,
+            owner: task.owner,
         });
         await loadTasks();
     }
 
-    const updateName = async (task: Task, newName: Humans) => {
+    const updateOwner = async (task: Task, newOwner: string | null) => {
         await updateTaskApi(task.id, {
             title: task.title,
             description: task.description,
             status: task.status,
             comments: task.comments,
-            human: newName,
+            owner: newOwner,
         });
         await loadTasks();
     };
@@ -77,12 +75,12 @@ export const TasksProvider = ({ children }: { children: ReactNode }) => {
             description: task.description,
             status: newStatus,
             comments: task.comments,
-            human: task.human,
+            owner: task.owner,
         });
         await loadTasks();
     }
     return (
-        <TaskContext.Provider value={{ tasks, addTask, removeTask, updateTitleAndDescription, updateStatus, createNewTask, updateName }}>
+        <TaskContext.Provider value={{ tasks, addTask, removeTask, updateTitleAndDescription, updateStatus, createNewTask, updateOwner }}>
             {children}
         </TaskContext.Provider>
     );

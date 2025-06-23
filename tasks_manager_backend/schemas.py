@@ -10,7 +10,7 @@ class TaskBase(BaseModel):
     description: Optional[str] = None
     comments: Optional[List[str]] = []
     status: TaskStatus = TaskStatus.NEW
-    human: str
+    owner: str
 
 
 class CreateTaskInput(TaskBase):
